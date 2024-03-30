@@ -1,18 +1,17 @@
-import sqlite3
+import sqlalchemy as db
+from sqlalchemy.orm import DeclarativeBase, Session
 
 
 class DB:
     __conn = None
 
     @classmethod
-    def get_conn(cls):
+    def get_engine(cls):
         if cls.__conn is None:
-            cls.__conn = sqlite3.connect("app.db")
+            cls.__conn = db.create_engine("sqlite:///db.sqlite")
 
         return cls.__conn
 
     @classmethod
-    def close_conn(cls):
-        if cls.__conn is not None:
-            cls.__conn.close()
-            cls.__conn = None
+    def get_session(cls):
+        return Session(cls.get_engine())

@@ -1,7 +1,7 @@
 import customtkinter as ctk
 
 
-class AutoFrame(ctk.CTkFrame):
+class MainFrame(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
 

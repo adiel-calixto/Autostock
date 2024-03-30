@@ -1,9 +1,13 @@
 import customtkinter as ctk
-from frames.admin import AdminFrame
-from frames.auto import AutoFrame
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from admin.frames import MainFrame as AdminFrame
+from customer.frames import MainFrame as CustomerFrame
+from auth.models import User
+from db import DB
 
 
-class LoginFrame(ctk.CTkFrame):
+class MainFrame(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -26,20 +30,22 @@ class LoginFrame(ctk.CTkFrame):
         self.button = ctk.CTkButton(self, text="Entrar", command=self.login)
         self.button.pack(pady=8, padx=10)
 
-        # Create a remember me checkbox
-        self.checkbox = ctk.CTkCheckBox(self, text="Abrir caixa?")
-        self.checkbox.pack(pady=10, padx=10)
-
     def login(self):
-        # ToDo: Mover essas credenciais para outro lugar
-        username = "admin"
-        password = "admin"
+        session = DB.get_session()
 
-        if self.user_entry.get() == username and self.user_pass.get() == password:
-            if bool(self.checkbox.get()):
-                self.parent.show_frame(AutoFrame)
-            else:
+        stmt = (
+            select(User)
+            .where(User.name == self.user_entry.get())
+            .where(User.password == self.user_pass.get())
+        )
+
+        user = session.execute(stmt).first()
+
+        if user:
+            if user.is_admin:
                 self.parent.show_frame(AdminFrame)
+            else:
+                self.parent.show_frame(CustomerFrame)
 
         self.user_entry.delete(0, "end")
         self.user_pass.delete(0, "end")

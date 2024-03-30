@@ -1,6 +1,7 @@
 import customtkinter as ctk
-from db import DB
-from frames import AutoFrame, AdminFrame, LoginFrame
+from auth.frames import MainFrame as LoginFrame
+from admin.frames import MainFrame as AdminFrame
+from customer.frames import MainFrame as CustomerFrame
 
 
 class App(ctk.CTk):
@@ -15,7 +16,7 @@ class App(ctk.CTk):
 
         self.frames = {}
 
-        for F in (AutoFrame, AdminFrame, LoginFrame):
+        for F in (CustomerFrame, AdminFrame, LoginFrame):
             frame = F(self)
             self.frames[F] = frame
 
@@ -35,5 +36,3 @@ class App(ctk.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-
-    DB.close_conn()

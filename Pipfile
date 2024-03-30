@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 customtkinter = "*"
+sqlalchemy = "*"
+alembic = "*"
 
 [dev-packages]
 
