@@ -1,16 +1,13 @@
 from typing import List
 from sqlalchemy import String
-from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 
+from db import BaseModel
 from shared.models import Order, Product
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-class User(Base):
+class User(BaseModel):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)

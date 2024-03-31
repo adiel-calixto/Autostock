@@ -1,14 +1,12 @@
 from datetime import datetime
 from typing import List, Optional
 from sqlalchemy import DateTime, ForeignKey, String, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from db import BaseModel
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-class Product(Base):
+class Product(BaseModel):
     __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -25,7 +23,7 @@ class Product(Base):
     )
 
 
-class OrderProduct(Base):
+class OrderProduct(BaseModel):
     __tablename__ = "order_product"
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), primary_key=True)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), primary_key=True)
@@ -36,7 +34,7 @@ class OrderProduct(Base):
     order: Mapped["Order"] = relationship(back_populates="products")
 
 
-class Order(Base):
+class Order(BaseModel):
     __tablename__ = "orders"
 
     id: Mapped[int] = mapped_column(primary_key=True)

@@ -1,5 +1,7 @@
 import sqlalchemy as db
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy.orm import Session, declarative_base
+
+BaseModel = declarative_base()
 
 
 class DB:

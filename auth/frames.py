@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 from admin.frames import MainFrame as AdminFrame
 from customer.frames import MainFrame as CustomerFrame
 from auth.models import User
@@ -39,7 +38,7 @@ class MainFrame(ctk.CTkFrame):
             .where(User.password == self.user_pass.get())
         )
 
-        user = session.execute(stmt).first()
+        user = session.scalars(stmt).first()
 
         if user:
             if user.is_admin:
