@@ -1,18 +1,11 @@
-import importlib
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from db import BaseModel
+from shared.utils import import_models
 
-MODELS_TO_LOAD = [
-    "auth",
-    "shared",
-]
-
-for pkg in MODELS_TO_LOAD:
-    importlib.import_module(f"{pkg}.models")
-
+import_models()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

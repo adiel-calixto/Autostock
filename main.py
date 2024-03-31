@@ -2,6 +2,7 @@ import customtkinter as ctk
 from auth.frames import MainFrame as LoginFrame
 from admin.frames import MainFrame as AdminFrame
 from customer.frames import MainFrame as CustomerFrame
+from shared.utils import import_models
 
 
 class App(ctk.CTk):
@@ -35,4 +36,5 @@ class App(ctk.CTk):
 
 if __name__ == "__main__":
     app = App()
+    import_models()
     app.mainloop()
