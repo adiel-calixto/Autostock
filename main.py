@@ -1,3 +1,4 @@
+from tkinter import ttk
 import customtkinter as ctk
 from auth.frames import MainFrame as LoginFrame
 from admin.frames import MainFrame as AdminFrame
@@ -10,10 +11,29 @@ class App(ctk.CTk):
         super().__init__()
 
         self.title("Test")
-        self.geometry("640x480")
+        self.geometry("840x540")
         self.resizable(False, False)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+
+        style = ttk.Style(self)
+        style.theme_use("default")
+
+        style.configure(
+            "Treeview",
+            background="#2a2b2b",
+            foreground="white",
+            rowheight=25,
+            fieldbackground="#343637",
+            bordercolor="#343637",
+            borderwidth=0,
+        )
+        style.map("Treeview", background=[("selected", "#154970")])
+
+        style.configure(
+            "Treeview.Heading", background="#3b3b3b", foreground="white", relief="flat"
+        )
+        style.map("Treeview.Heading", background=[("active", "#206aa5")])
 
         self.frames = {}
 
