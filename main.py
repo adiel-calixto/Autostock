@@ -1,4 +1,5 @@
 from tkinter import ttk
+from typing import Type, Union
 import customtkinter as ctk
 from auth.frames import MainFrame as LoginFrame
 from admin.frames import MainFrame as AdminFrame
@@ -49,7 +50,7 @@ class App(ctk.CTk):
     def __open_admin_callback(self, event):
         self.show_frame(LoginFrame)
 
-    def show_frame(self, cont):
+    def show_frame(self, cont: Type[Union[AdminFrame, LoginFrame, CustomerFrame]]):
         frame = self.frames[cont]
         frame.tkraise()
 

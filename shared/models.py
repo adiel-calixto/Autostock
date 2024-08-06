@@ -11,7 +11,8 @@ class Product(BaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(128))
-    ref: Mapped[str] = mapped_column(String(10))
+    ref: Mapped[str] = mapped_column(String(128), unique=True)
+    quantity: Mapped[int] = mapped_column()
     price: Mapped[float] = mapped_column()
     orders: Mapped[List["OrderProduct"]] = relationship(back_populates="product")
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
@@ -25,10 +26,11 @@ class Product(BaseModel):
 
 class OrderProduct(BaseModel):
     __tablename__ = "order_product"
+
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), primary_key=True)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), primary_key=True)
     t_price: Mapped[float] = mapped_column()
-    t_ref: Mapped[Optional[str]] = mapped_column(String(10))
+    t_ref: Mapped[Optional[str]] = mapped_column(String(128))
     quantity: Mapped[int] = mapped_column()
     product: Mapped["Product"] = relationship(back_populates="orders")
     order: Mapped["Order"] = relationship(back_populates="products")

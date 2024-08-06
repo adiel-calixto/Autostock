@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 import customtkinter as ctk
 from sqlalchemy import select
 from admin.frames import MainFrame as AdminFrame
@@ -5,9 +6,12 @@ from customer.frames import MainFrame as CustomerFrame
 from auth.models import User
 from db import DB
 
+if TYPE_CHECKING:
+    from main import App
+
 
 class MainFrame(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent: "App"):
         super().__init__(parent)
 
         self.parent = parent

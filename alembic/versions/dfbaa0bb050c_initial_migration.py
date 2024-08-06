@@ -1,8 +1,8 @@
-"""Create a baseline migrations
+"""Initial migration
 
-Revision ID: 0ab7850b4ed4
+Revision ID: dfbaa0bb050c
 Revises: 
-Create Date: 2024-03-30 21:23:53.707247
+Create Date: 2024-04-06 02:57:32.453234
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0ab7850b4ed4'
+revision: str = 'dfbaa0bb050c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -38,19 +38,21 @@ def upgrade() -> None:
     op.create_table('products',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
-    sa.Column('ref', sa.String(length=10), nullable=False),
+    sa.Column('ref', sa.String(length=128), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('ref')
     )
     op.create_table('order_product',
     sa.Column('order_id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('t_price', sa.Float(), nullable=False),
-    sa.Column('t_ref', sa.String(length=10), nullable=True),
+    sa.Column('t_ref', sa.String(length=128), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['order_id'], ['orders.id'], ),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
