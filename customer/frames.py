@@ -80,6 +80,7 @@ class MainFrame(ctk.CTkFrame):
 
             self.search_input = ctk.CTkEntry(search_frame, placeholder_text="Buscar")
             self.search_input.grid(row=0, column=0, sticky="nsew", pady=10, padx=(10, 0))
+            self.search_input.bind("<Return>", lambda _: self.__search_product())
 
             search_button = ctk.CTkButton(search_frame, text="+", width=64, command=self.__search_product)
             search_button.grid(row=0, column=1, pady=10, padx=10)
@@ -105,7 +106,6 @@ class MainFrame(ctk.CTkFrame):
                 fg_color="transparent",
                 hover_color="#500000",
                 border_color="#500000",
-                text_color="black",
                 border_width=2,
                 command=self.__cancel_order,
             )
@@ -142,7 +142,7 @@ class MainFrame(ctk.CTkFrame):
                 self.selected_product_label.configure(text="Produto não encontrado")
                 return
 
-            self.selected_product_label.configure(text=f"{product.name} | R${product.price}")
+            self.selected_product_label.configure(text=f"%s | R$%.2f" % (product.name, product.price))
             self.__add_product(product)
 
         def __add_product(self, product: Product):
@@ -175,8 +175,12 @@ class MainFrame(ctk.CTkFrame):
             super().__init__(parent)
 
             self.__parent = parent
+            self.__order = order
 
-            btn = ctk.CTkButton(self, text="Finalizar compra", height=64, command=self.__finish_order)
+            label = ctk.CTkLabel(self, text="Informe o meio de pagamento")
+            label.pack()
+
+            btn = ctk.CTkButton(self, text="Finalizar compra", command=self.__finish_order)
             btn.pack()
 
         def __finish_order(self):
@@ -213,7 +217,7 @@ class MainFrame(ctk.CTkFrame):
         self._reset_order()
         self.__init_frames()
 
-        self._show_frame(self.CartFrame)
+        self._show_frame(self.StartFrame)
 
     def __init_frames(self):
         for F in (self.StartFrame, self.CartFrame, self.PaymentFrame):
