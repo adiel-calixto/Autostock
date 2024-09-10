@@ -4,7 +4,9 @@ from typing import Type, Union
 import customtkinter as ctk
 from sqlalchemy import select
 from db import DB
+from shared.enums import PaymentMethod
 from shared.models import Order, OrderProduct, Product
+from shared.utils import now
 
 session = DB.get_session()
 
@@ -177,13 +179,48 @@ class MainFrame(ctk.CTkFrame):
             self.__parent = parent
             self.__order = order
 
-            label = ctk.CTkLabel(self, text="Informe o meio de pagamento")
-            label.pack()
+            label = ctk.CTkLabel(self, text="Informe o meio de pagamento", font=ctk.CTkFont(size=32))
+            label.pack(pady=40)
 
-            btn = ctk.CTkButton(self, text="Finalizar compra", command=self.__finish_order)
-            btn.pack()
+            radio_frame = ctk.CTkFrame(self)
+            self.radio_var = tk.StringVar(value="")
+
+            for i, method in enumerate(PaymentMethod):
+                radiobutton = ctk.CTkRadioButton(
+                    radio_frame,
+                    text=method.name,
+                    variable=self.radio_var,
+                    value=method.value,
+                    command=self.__payment_method_selected,
+                )
+                radiobutton.grid(column=i, row=0, padx=10, pady=10)
+
+            radio_frame.pack(pady=40)
+
+            buttons_frame = ctk.CTkFrame(self)
+
+            return_btn = ctk.CTkButton(
+                buttons_frame,
+                text="Voltar",
+                fg_color="transparent",
+                height=40,
+                command=lambda: self.__parent._show_frame(MainFrame.CartFrame),
+            )
+            return_btn.grid(row=0, column=0, pady=10, padx=10)
+
+            self.finish_btn = ctk.CTkButton(
+                buttons_frame, text="Finalizar compra", command=self.__finish_order, state="disabled", height=40
+            )
+            self.finish_btn.grid(row=0, column=1, pady=10, padx=10)
+
+            buttons_frame.pack()
+
+        def __payment_method_selected(self):
+            self.finish_btn.configure(state="normal")
 
         def __finish_order(self):
+            self.__order.payment_method = self.radio_var.get()
+            self.__order.created_at = now()
             session.commit()
 
             self.__parent._reset_order()

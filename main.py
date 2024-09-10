@@ -7,6 +7,7 @@ from customer.frames import MainFrame as CustomerFrame
 from shared.utils import import_models
 
 ctk.set_appearance_mode("Dark")
+ctk.set_widget_scaling(1.5)
 
 
 class App(ctk.CTk):
@@ -14,8 +15,7 @@ class App(ctk.CTk):
         super().__init__()
 
         self.title("Test")
-        self.geometry("840x540")
-        self.resizable(False, False)
+        self.geometry("1280x720")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -26,14 +26,21 @@ class App(ctk.CTk):
             "Treeview",
             background="#2a2b2b",
             foreground="white",
-            rowheight=25,
+            rowheight=40,
             fieldbackground="#343637",
             bordercolor="#343637",
             borderwidth=0,
+            font=(None, 14),
         )
         style.map("Treeview", background=[("selected", "#154970")])
 
-        style.configure("Treeview.Heading", background="#3b3b3b", foreground="white", relief="flat")
+        style.configure(
+            "Treeview.Heading",
+            background="#3b3b3b",
+            foreground="white",
+            relief="flat",
+            font=(None, 16),
+        )
         style.map("Treeview.Heading", background=[("active", "#206aa5")])
 
         self.frames = {}
