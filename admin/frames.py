@@ -4,9 +4,10 @@ from tkinter.messagebox import askyesno
 import tkinter as tk
 from typing import TYPE_CHECKING
 import customtkinter as ctk
-from sqlalchemy import and_, delete, or_, select, text, update
+from sqlalchemy import delete, or_, select, update
 from db import DB
 from shared.models import Order, Product
+from shared.utils import get_logo_image
 
 if TYPE_CHECKING:
     from main import App
@@ -119,14 +120,14 @@ class MainFrame(ctk.CTkFrame):
         def __init__(self, master: "MainFrame.Sidebar", callback):
             super().__init__(master)
 
-            self.geometry("800x480")
+            self.geometry("800x600")
             self.callback = callback
 
             session = DB.get_session()
             orders = session.query(Order).filter(Order.created_at > (date.today() - timedelta(days=1))).all()
-            columns = ("id", "price", "payment", "products", "time")
-
             order_price = lambda order: sum([product.t_price * product.quantity for product in order.products])
+            columns = ("id", "price", "payment", "products", "time")
+            total_amount = 0
 
             self.table = ttk.Treeview(
                 master=self,
@@ -147,6 +148,7 @@ class MainFrame(ctk.CTkFrame):
             self.table.heading("time", anchor="w", text="Hora")
 
             for o in orders:
+                total_amount += order_price(o)
                 products = self.__get_products_string(o)
 
                 self.table.insert(
@@ -163,13 +165,18 @@ class MainFrame(ctk.CTkFrame):
 
             self.table.pack(pady=20, padx=20)
 
+            total_amount_label = ctk.CTkLabel(
+                self, text="Total em vendas = R$%.2f" % total_amount, font=ctk.CTkFont(size=20)
+            )
+            total_amount_label.pack(pady=20, padx=20)
+
         def __get_products_string(self, order: Order):
             result = ""
             i = 0
 
             while len(result) < 500 and i < len(order.products):
                 product = order.products[i]
-                result += "%s x %d, " % (product.product.name, product.quantity)
+                result += "%s x %d, " % (product.t_ref, product.quantity)
 
                 i += 1
 
@@ -182,8 +189,11 @@ class MainFrame(ctk.CTkFrame):
             self.master = master
             self.grid_rowconfigure(5, weight=1)
 
-            self.logo_label = ctk.CTkLabel(self, text="Autostock", font=ctk.CTkFont(size=20, weight="bold"))
+            logo = get_logo_image()
+
+            self.logo_label = ctk.CTkLabel(self, image=logo, text="")
             self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+
             self.sidebar_button_1 = ctk.CTkButton(
                 self,
                 text="Adicionar produto",

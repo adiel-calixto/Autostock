@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, declarative_base
 BaseModel = declarative_base()
 
 
+# Classe que inicializa a conexão com o banco
 class DB:
     __conn = None
 

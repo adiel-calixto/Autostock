@@ -2,11 +2,11 @@ from tkinter import ttk
 import tkinter as tk
 from typing import Type, Union
 import customtkinter as ctk
-from sqlalchemy import select
+from sqlalchemy import select, text
 from db import DB
 from shared.enums import PaymentMethod
 from shared.models import Order, OrderProduct, Product
-from shared.utils import now
+from shared.utils import get_logo_image, now
 
 session = DB.get_session()
 
@@ -99,10 +99,14 @@ class MainFrame(ctk.CTkFrame):
                 pady=10,
             )
 
-            btn_frame = ctk.CTkFrame(self)
+            bottom_frame = ctk.CTkFrame(self)
+            bottom_frame.grid_columnconfigure(0, weight=1)
+
+            logo_label = ctk.CTkLabel(bottom_frame, image=get_logo_image(), text="")
+            logo_label.grid(row=0, column=0, pady=10, padx=20, sticky="nsw")
 
             cancel_button = ctk.CTkButton(
-                btn_frame,
+                bottom_frame,
                 text="Cancelar compra",
                 height=64,
                 fg_color="transparent",
@@ -111,10 +115,10 @@ class MainFrame(ctk.CTkFrame):
                 border_width=2,
                 command=self.__cancel_order,
             )
-            cancel_button.grid(row=0, column=0, sticky="nse", pady=10, padx=20)
+            cancel_button.grid(row=0, column=1, pady=10, padx=20)
 
             self.finish_button = ctk.CTkButton(
-                btn_frame,
+                bottom_frame,
                 text="Pagar",
                 height=64,
                 fg_color="green",
@@ -122,9 +126,9 @@ class MainFrame(ctk.CTkFrame):
                 command=self.__pay_order,
                 state="disabled",
             )
-            self.finish_button.grid(row=0, column=1, sticky="nse", pady=10, padx=20)
+            self.finish_button.grid(row=0, column=2, pady=10, padx=20)
 
-            btn_frame.grid(row=2, column=0, sticky="nse", pady=10, padx=20)
+            bottom_frame.grid(row=2, column=0, sticky="ew", pady=10, padx=20)
 
         def __pay_order(self):
             self.__parent._show_frame(MainFrame.PaymentFrame)
