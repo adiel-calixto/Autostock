@@ -1,5 +1,5 @@
 
-![Logo](https://github.com/adiel-calixto/Autostock/blob/main/assets/logo_horizontal.png?raw=true)
+![Logo](https://github.com/adiel-calixto/Autostock/blob/main/assets/logo_horizontal_i.png?raw=true)
 
 
 # Autostock
