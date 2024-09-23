@@ -1,6 +1,6 @@
 from tkinter import ttk
 import tkinter as tk
-from typing import Type, Union
+from typing import Any, Type, Union
 from PIL import Image
 import customtkinter as ctk
 from sqlalchemy import select, text
@@ -131,6 +131,10 @@ class MainFrame(ctk.CTkFrame):
 
             bottom_frame.grid(row=2, column=0, sticky="ew", pady=10, padx=20)
 
+        def tkraise(self, aboveThis: Any | None = None) -> None:
+            super().tkraise(aboveThis)
+            self.search_input.focus()
+
         def __pay_order(self):
             self.__parent._show_frame(MainFrame.PaymentFrame)
 
@@ -144,6 +148,8 @@ class MainFrame(ctk.CTkFrame):
             )
 
             product = session.scalar(stmt)
+
+            self.search_input.delete(0, "end")
 
             if product == None:
                 self.selected_product_label.configure(text="Produto não encontrado")
@@ -250,7 +256,7 @@ class MainFrame(ctk.CTkFrame):
             btn = ctk.CTkButton(
                 self,
                 text="",
-                fg_color='transparent',
+                fg_color="transparent",
                 hover=False,
                 image=ctk.CTkImage(Image.open("assets/touch.png"), Image.open("assets/touch_i.png"), (210, 180)),
                 command=lambda: self.__parent._show_frame(MainFrame.CartFrame),
