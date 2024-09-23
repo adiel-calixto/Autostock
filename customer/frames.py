@@ -1,6 +1,7 @@
 from tkinter import ttk
 import tkinter as tk
 from typing import Type, Union
+from PIL import Image
 import customtkinter as ctk
 from sqlalchemy import select, text
 from db import DB
@@ -182,24 +183,26 @@ class MainFrame(ctk.CTkFrame):
 
             self.__parent = parent
             self.__order = order
+            self.__selected_payment_method = None
 
             label = ctk.CTkLabel(self, text="Informe o meio de pagamento", font=ctk.CTkFont(size=32))
             label.pack(pady=40)
 
-            radio_frame = ctk.CTkFrame(self)
-            self.radio_var = tk.StringVar(value="")
+            payment_frame = ctk.CTkFrame(self)
 
             for i, method in enumerate(PaymentMethod):
-                radiobutton = ctk.CTkRadioButton(
-                    radio_frame,
-                    text=method.name,
-                    variable=self.radio_var,
-                    value=method.value,
-                    command=self.__payment_method_selected,
+                radiobutton = ctk.CTkButton(
+                    payment_frame,
+                    text="",
+                    image=method.get_image(),
+                    command=lambda bound_method=method: self.__payment_method_selected(bound_method),
                 )
                 radiobutton.grid(column=i, row=0, padx=10, pady=10)
 
-            radio_frame.pack(pady=40)
+            payment_frame.pack(pady=40)
+
+            self.selected_payment_label = ctk.CTkLabel(self, text="")
+            self.selected_payment_label.pack(pady=10)
 
             buttons_frame = ctk.CTkFrame(self)
 
@@ -219,11 +222,16 @@ class MainFrame(ctk.CTkFrame):
 
             buttons_frame.pack()
 
-        def __payment_method_selected(self):
+        def __payment_method_selected(self, payment_method: PaymentMethod):
+            self.__selected_payment_method = payment_method
+            self.selected_payment_label.configure(text="Meio de pagamento: %s" % payment_method.get_name())
             self.finish_btn.configure(state="normal")
 
         def __finish_order(self):
-            self.__order.payment_method = self.radio_var.get()
+            if not self.__selected_payment_method:
+                return
+
+            self.__order.payment_method = self.__selected_payment_method.value
             self.__order.created_at = now()
             session.commit()
 
@@ -236,15 +244,21 @@ class MainFrame(ctk.CTkFrame):
 
             self.__parent = parent
 
-            label = ctk.CTkLabel(self, text="Caixa Livre")
-            label.pack()
+            label = ctk.CTkLabel(self, text="Caixa Livre", font=ctk.CTkFont(size=20))
+            label.pack(pady=(40, 20))
 
             btn = ctk.CTkButton(
                 self,
-                text="Iniciar compra",
+                text="",
+                fg_color='transparent',
+                hover=False,
+                image=ctk.CTkImage(Image.open("assets/touch.png"), Image.open("assets/touch_i.png"), (210, 180)),
                 command=lambda: self.__parent._show_frame(MainFrame.CartFrame),
             )
-            btn.pack()
+            btn.pack(pady=(20, 10))
+
+            label2 = ctk.CTkLabel(self, text="Toque para iniciar uma compra")
+            label2.pack()
 
     def __init__(self, parent):
         super().__init__(parent)
