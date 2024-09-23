@@ -50,3 +50,5 @@ Sistema de auto-atendimento e controle de estoque para pequenos negócios
 
 - [@adiel-calixto](https://www.github.com/adiel-calixto)
 - [@JhonatanLobo](https://www.github.com/JhonatanLobo)
+- [@Jonatas Lima](https://github.com/JonatasLima251)
+- [@João Marcos](https://github.com/Greninha)
